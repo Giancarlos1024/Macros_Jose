@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../css/Admin.css';
+import { UserContext } from '../Provider/UserContext'; // Asegúrate de que la ruta sea correcta
 
 const Admin = () => {
   const navigate = useNavigate();
+  // Obtiene el contexto del usuario
+  const { username } = useContext(UserContext);
+  
+  const [formattedDate, setFormattedDate] = useState('');
+
+  useEffect(() => {
+    const updateDate = () => {
+      const today = new Date();
+
+      const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: 'numeric', 
+        minute: 'numeric', 
+        second: 'numeric',  
+        hour12: true 
+      };
+
+      const formatted = today.toLocaleDateString('es-ES', options);
+      setFormattedDate(formatted);
+    };
+
+    // Actualiza la fecha cada segundo
+    const intervalId = setInterval(updateDate, 1000);
+
+    // Limpia el intervalo cuando el componente se desmonta
+    return () => clearInterval(intervalId);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('userToken');
@@ -28,7 +59,7 @@ const Admin = () => {
           'Cerrado!',
           'Tu sesión ha sido cerrada.',
           'success'
-        )
+        );
       }
     });
   };
@@ -65,7 +96,21 @@ const Admin = () => {
                     <>
                       {isActive && <div className="active-bar"></div>}
                       <img src={isActive ? "/img/ingresarfacturasActivo.png" : "/img/ingresarfacturas.png"} alt="error" className='iconNavDashboard' />
-                      Ingresar datos
+                      SINOT
+                    </>
+                  )}
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/formulario2"
+                  className={({ isActive }) => (isActive ? 'active' : '')}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {isActive && <div className="active-bar"></div>}
+                      <img src={isActive ? "/img/ingresarfacturasActivo.png" : "/img/ingresarfacturas.png"} alt="error" className='iconNavDashboard' />
+                      NOT SSB
                     </>
                   )}
                 </NavLink>
@@ -79,6 +124,14 @@ const Admin = () => {
         </button>
       </div>
       <div className="containerPanel">
+        <div className="user-info">
+          <h3>👋🏼 Hola : {username}</h3>
+          <div>
+            <h4>Resumen de Hoy</h4>
+            <p>{formattedDate}</p>
+          </div>
+        </div>
+
         <div className="content">
           <Outlet />
         </div>

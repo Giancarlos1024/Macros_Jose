@@ -8,8 +8,17 @@
     align-items: center;
     padding-bottom: 25px;
   }
+  .contenedor-filtro{
+    /* background-color: #28a745; */
+    display: flex;
+    justify-content: end;
+  }
+  .contenedor-filtro > input{
+    margin-left: 5px;
+    margin-right: 5px;
+  }
   /* Container Styles */
-  .container {
+  /* .container {
     width: 80%;
     margin: 0 auto;
     padding: 20px;
@@ -17,7 +26,7 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
     margin-top: 20px;
-  }
+  } */
   
   /* Header Styles */
   h1, h2 {
@@ -28,16 +37,22 @@
   /* Form Styles */
   form {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     padding-bottom: 20px;
     /* background-color: yellow; */
     padding: 5px;
-    width: 50%;
+    width: 100%;
+  }
+  form > div{
+    /* background-color: orange; */
+    margin: 5px;
   }
   
   label {
     font-weight: bold;
     margin-bottom: 5px;
+    color: #007bff;
+    
   }
   
   input {
@@ -68,17 +83,22 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    
   }
   
   th, td {
-    padding: 12px;
+    padding: 10px;
     border-bottom: 1px solid #ddd;
     text-align: center;
+    font-size: 12px;
+    
   }
   
   th {
-    background-color: #007bff;
+    background-color: #267bd6;
     color: #fff;
+
+    
   }
   
   tr:nth-child(even) {
@@ -148,16 +168,17 @@ input[type="number"] {
     padding: 8px;
     margin-left: 2px;
 }
-.button-editar{
-    background-color: #28a745;
+.button-sinot{
+  width: 80px;
 }
-.button-editar:hover{
-    background-color: #007bff;
+.button-sinoteditar:hover{
+  background-color: #143ae4;
 }
 
-.button-eliminar{
-    background-color: red;
+.button-sinoteliminar:hover{
+  background-color: #c82333;
 }
-.button-eliminar:hover{
-    background-color: black;
+.encabezados-sinot > tr > th{
+  /* background-color: #218838; */
+  padding: 15px;
 }

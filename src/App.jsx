@@ -6,6 +6,7 @@ import Admin from './screens/Admin';
 import {UserProvider} from './Provider/UserContext'; 
 import { Formulario } from './components/Formulario';
 import { PanelControl } from './screens/PanelControl';
+import { Formulario2 } from './components/Formulario2';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/admin" element={<Admin />}>
             <Route path="panel" element={<PanelControl />} />
             <Route path="formulario" element={<Formulario />} />
+            <Route path="formulario2" element={<Formulario2 />} />
           </Route>
         </Routes>
       </Router>

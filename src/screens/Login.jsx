@@ -34,7 +34,7 @@ const Login = () => {
         localStorage.setItem('username', username);
         localStorage.setItem('userToken', data.token);
   
-        navigate('/admin');
+        navigate('/admin/panel');
       } else {
         setMessage(data.message || 'Error al iniciar sesión');
       }

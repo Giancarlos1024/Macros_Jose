@@ -14,9 +14,13 @@ app.use(express.static('public'));
 // Rutas
 const loginRoutes = require('./src/Routes/RouterLogin');
 const oficinasRoutes = require('./src/Routes/RouterOficinas');
+const usuariosRoutes = require('./src/Routes/RouterUsuarios'); // Nueva ruta
+const Not_ssb = require('./src/Routes/RouterNot_ssb');
 
 app.use('/', loginRoutes);
 app.use('/api', oficinasRoutes); // Prefijo /api para las rutas de oficinas
+app.use('/users', usuariosRoutes); // Prefijo /api para las rutas de usuarios
+app.use('/apinotssb', Not_ssb); // Prefijo /api para las rutas de excel
 
 // Iniciar servidor
 app.listen(port, () => {

@@ -182,4 +182,9 @@
     border: none;
     border-radius: 5px;
   }
-  
+  .user-info{
+    /* background-color: #82BC49; */
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 25px;
+  }

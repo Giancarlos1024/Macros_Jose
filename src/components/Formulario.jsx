@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import Modal from 'react-modal';
 import '../css/Formulario.css';
 
 export const Formulario = () => {
@@ -33,16 +35,18 @@ export const Formulario = () => {
     Obs_notif: '',
     Obs_edo: ''
   });
-
   const [oficinas, setOficinas] = useState([]);
   const [editId, setEditId] = useState(null);
   const [filters, setFilters] = useState({
     notif: '',
     year: ''
   });
-
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+  const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
+
 
   const fetchOficinas = () => {
     fetch(`http://localhost:3000/api/oficinas?${new URLSearchParams({ ...filters, page: currentPage, limit: 10 })}`)
@@ -62,8 +66,6 @@ export const Formulario = () => {
         setOficinas([]); // Establecer un array vacío en caso de error
       });
   };
-  
-
   useEffect(() => {
     fetchOficinas();
   }, []);
@@ -72,7 +74,6 @@ export const Formulario = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
@@ -131,7 +132,6 @@ export const Formulario = () => {
         alert('Error al guardar la oficina');
       });
   };
-
   const handleEdit = (oficina) => {
     setFormData({
       Notif: oficina.Notif,
@@ -166,7 +166,6 @@ export const Formulario = () => {
     });
     setEditId(oficina.Id);
   };
-
   const handleDelete = (id) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar esta oficina?')) {
       fetch(`http://localhost:3000/api/oficinas/${id}`, { method: 'DELETE' })
@@ -182,11 +181,9 @@ export const Formulario = () => {
         });
     }
   };
-
   const applyFilters = () => {
     fetchOficinas();
   };
-
   const handleCancel = () => {
     setFormData({
       Notif: '',
@@ -228,14 +225,74 @@ export const Formulario = () => {
       fetchOficinas();
     }
   };
-  
-  
+
+  const generatePDF = (oficina) => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [300, 700] // [height, width]
+    });
+    const logoWidth = 100; // Ajusta el tamaño del logo según sea necesario
+    const logoHeight = 50;
+    const logo = '/img/logopdf.jpg'; // Aquí deberías colocar la imagen codificada en base64 o la URL de la imagen
+    doc.addImage(logo, 'PNG', 20, 20, logoWidth, logoHeight);
+    doc.text(`CFE DISTRIBUCION ZONA SANTIAGO`, 20,120);
+    doc.text(`ING. JULIO CESAR RAUIZ MONTAÑEZ`, 20,140);
+    doc.text(`PRIMERA CORREGIDORA Y GRAL. NEGRETE`, 20,160);
+    doc.text(`SANTIAGO IXCUINTLA, NAYARIT. C.P. : 63300`, 20,180);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${oficina.Nombre}`, 450, 200);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Dirección: ', 450, 220);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${oficina.Direccion}`, 520, 220);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`RPU: ${oficina.rpu}`, 450, 240);
+    doc.text(`Ciudad: ${oficina.Ciudad}`, 450, 260);
+
+    setPdfData(doc.output('datauristring'));
+    setSelectedPDF('pdf1'); // Establece el tipo de PDF
+    setIsModalOpen(true);
+  };
+
+  const generatePDF2 = (oficina) => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [300, 700] // [height, width]
+    });
+
+    doc.text('Nombre del destinatario: ESC SEC TEC 33 BENITO JUAREZ', 20, 120);
+    doc.text('Domicilio: D C JESUS MARIA', 20, 140);
+    doc.text('Entrecalles: ', 20, 160);
+    doc.text('Población: JESUS MARIA', 20, 180);
+
+
+    setPdfData(doc.output('datauristring'));
+    setSelectedPDF('pdf2'); // Establece el tipo de PDF
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPdfData(null);
+    setSelectedPDF(null); // Resetea el tipo de PDF
+  };
+
+  const downloadPDF = () => {
+    if (pdfData) {
+      const link = document.createElement('a');
+      link.href = pdfData;
+      link.download = `Registro_${formData.Notif || 'nuevo'}.pdf`;
+      link.click();
+    }
+  };
+
   return (
     <div>
       <h2>CREAR REGISTRO SINOT</h2>
       <div className='contenedor-registro'>
         <form onSubmit={handleSubmit}>
-
             <div>
               <label htmlFor="Notif">Notificación</label>
               <input type="text" name="Notif" value={formData.Notif} onChange={handleChange} />
@@ -304,16 +361,12 @@ export const Formulario = () => {
               <label htmlFor="Obs_edo">Observaciones Edo</label>
               <input type="text" name="Obs_edo" value={formData.Obs_edo} onChange={handleChange} />
             </div>
-          
-          <div>
-            <button type="submit">{editId ? 'Actualizar' : 'Registrar'}</button>
-            <button type="button" onClick={handleCancel}>Cancelar</button>
-          </div>
         </form>
       </div>
-
-      
-
+      <div>
+        <button className='button-sinot' type="submit">{editId ? 'Actualizar' : 'Registrar'}</button>
+        <button type="button" onClick={handleCancel}>Cancelar</button>
+      </div>
       <h1>Registros de SINOT</h1>
       <div className='contenedor-filtro'>
         
@@ -352,7 +405,7 @@ export const Formulario = () => {
           </thead>
           <tbody>
             {oficinas.map(oficina => (
-              <tr key={oficina.Id}>
+              <tr key={oficina.Id} onClick={() => generatePDF(oficina)}>
                 <td>{oficina.Notif}</td>
                 <td>{oficina.Fecha_Elab?.slice(0, 10)}</td>
                 <td>{oficina.KHW_Total}</td>
@@ -367,6 +420,7 @@ export const Formulario = () => {
                   <button className='button-sinot button-sinoteditar' onClick={() => handleEdit(oficina)}>Editar</button>
                   <button className='button-sinot button-sinoteliminar' onClick={() => handleDelete(oficina.Id)}>Eliminar</button>
                 </td>
+
               </tr>
             ))}
           </tbody>
@@ -387,6 +441,33 @@ export const Formulario = () => {
           Siguiente
         </button>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Vista Previa del PDF"
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            height: '80%',
+          },
+        }}
+      >
+        <h2>Vista Previa del PDF</h2>
+        <div>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>PDF 1</button>
+          <button onClick={() => { generatePDF2(selectedPDF); }}>PDF 2</button>
+        </div>
+        {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
+        <button style={{margin:"0px 5px"}} onClick={closeModal}>Cerrar</button>
+        <button onClick={downloadPDF}>Descargar PDF</button>
+      </Modal>
+
     </div>
   );
 };

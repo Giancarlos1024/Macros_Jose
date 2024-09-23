@@ -6,7 +6,8 @@
     flex-flow: column wrap;
     justify-content: center;
     align-items: center;
-    padding-bottom: 25px;
+    padding-bottom: 0px;
+    /* background-color: yellow; */
   }
   .contenedor-filtro{
     /* background-color: #28a745; */
@@ -170,6 +171,7 @@ input[type="number"] {
 }
 .button-sinot{
   width: 80px;
+  margin: 5px 10px;
 }
 .button-sinoteditar:hover{
   background-color: #143ae4;

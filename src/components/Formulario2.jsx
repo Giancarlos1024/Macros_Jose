@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../css/Not_ssb.css';
-
+import Modal from 'react-modal';
+import jsPDF from 'jspdf';
 export const Formulario2 = () => {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({
@@ -29,6 +30,10 @@ export const Formulario2 = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [pdfData, setPdfData] = useState(null);
+  const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
+
 
   useEffect(() => {
     fetchRecords();
@@ -181,21 +186,75 @@ export const Formulario2 = () => {
     fetchRecords(newPage);
   };
   
+  const generatePDF = (record) => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [300, 700] // [height, width]
+    });
+    const logoWidth = 100; // Ajusta el tamaño del logo según sea necesario
+    const logoHeight = 50;
+    const logo = '/img/logopdf.jpg'; // Aquí deberías colocar la imagen codificada en base64 o la URL de la imagen
+    doc.addImage(logo, 'PNG', 20, 20, logoWidth, logoHeight);
+    doc.text(`CFE DISTRIBUCION ZONA SANTIAGO`, 20,120);
+    doc.text(`ING. JULIO CESAR RAUIZ MONTAÑEZ`, 20,140);
+    doc.text(`PRIMERA CORREGIDORA Y GRAL. NEGRETE`, 20,160);
+    doc.text(`SANTIAGO IXCUINTLA, NAYARIT. C.P. : 63300`, 20,180);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${record.Nombre}`, 450, 200);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Agencia: ', 450, 220);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`${record.Agencia}`, 520, 220);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`RPU: ${record.RPU}`, 450, 240);
+    doc.text(`Zona: ${record.Zona}`, 450, 260);
+
+    setPdfData(doc.output('datauristring'));
+    setSelectedPDF('pdf1'); // Establece el tipo de PDF
+    setIsModalOpen(true);
+  };
+
+
+
+  const generatePDF2 = (oficina) => {
+    const doc = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [300, 700] // [height, width]
+    });
+
+    doc.text('Nombre del destinatario: ESC SEC TEC 33 BENITO JUAREZ', 20, 120);
+    doc.text('Domicilio: D C JESUS MARIA', 20, 140);
+    doc.text('Entrecalles: ', 20, 160);
+    doc.text('Población: JESUS MARIA', 20, 180);
+
+
+    setPdfData(doc.output('datauristring'));
+    setSelectedPDF('pdf2'); // Establece el tipo de PDF
+    setIsModalOpen(true);
+  };
+
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPdfData(null);
+    setSelectedPDF(null); // Resetea el tipo de PDF
+  };
+
+  const downloadPDF = () => {
+    if (pdfData) {
+      const link = document.createElement('a');
+      link.href = pdfData;
+      link.download = `Sobre Manual_${form.Notif || ''}.pdf`;
+      link.click();
+    }
+  };
 
   return (
     <div>
       <h2>{editing ? 'MODIFICAR REGISTRO NOT SSB' : 'CREAR REGISTRO NOT SSB'}</h2>
       <form className='form-notsbb' onSubmit={handleSubmit}>
-        {/* <div>
-          <label>ID</label>
-          <input
-            type="text"
-            name="Id"
-            value={form.Id}
-            onChange={handleChange}
-            disabled={editing} // No permitir modificar ID al editar
-          />
-        </div> */}
         <div>
           <div>
             <label>FALLA</label>
@@ -375,7 +434,7 @@ export const Formulario2 = () => {
           </thead>
           <tbody>
             {records.map((record) => (
-              <tr key={record.Id}>
+              <tr key={record.Id} onClick={() => generatePDF(record)}>
                 <td>{record.Falla}</td>
                 <td>{record.Notif}</td>
                 <td>{record.Zona}</td>
@@ -414,6 +473,32 @@ export const Formulario2 = () => {
           Siguiente
         </button>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Vista Previa del PDF"
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+            width: '80%',
+            height: '80%',
+          },
+        }}
+      >
+        <h2>Vista Previa del PDF</h2>
+        <div>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>Sobre Manual</button>
+          <button onClick={() => { generatePDF2(selectedPDF); }}>Ajuste de Revisión-EV F3</button>
+        </div>
+        {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
+        <button style={{margin:"0px 5px"}} onClick={closeModal}>Cerrar</button>
+        <button onClick={downloadPDF}>Descargar PDF</button>
+      </Modal>
     </div>
   );
 };

@@ -283,7 +283,7 @@ export const Formulario = () => {
     if (pdfData) {
       const link = document.createElement('a');
       link.href = pdfData;
-      link.download = `Registro_${formData.Notif || 'nuevo'}.pdf`;
+      link.download = `Sobre Manual_${formData.Notif || ''}.pdf`;
       link.click();
     }
   };
@@ -460,8 +460,8 @@ export const Formulario = () => {
       >
         <h2>Vista Previa del PDF</h2>
         <div>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>PDF 1</button>
-          <button onClick={() => { generatePDF2(selectedPDF); }}>PDF 2</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>Sobre Manual</button>
+          <button onClick={() => { generatePDF2(selectedPDF); }}>Ajuste de Revisión-EV F3</button>
         </div>
         {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
         <button style={{margin:"0px 5px"}} onClick={closeModal}>Cerrar</button>

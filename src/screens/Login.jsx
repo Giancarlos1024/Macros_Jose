@@ -13,7 +13,7 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     try {
       const response = await fetch(`http://localhost:3000/autenticarlogin`, {
         method: 'POST',
@@ -22,19 +22,27 @@ const Login = () => {
         },
         body: JSON.stringify({ username, password }),
       });
-  
+
       const data = await response.json();
       setMessage(data.message);
-  
+
       if (response.status === 200) {
         setGlobalUsername(username);
         setToken(data.token);
-  
+        
         // Guardar en localStorage
         localStorage.setItem('username', username);
         localStorage.setItem('userToken', data.token);
-  
-        navigate('/admin/panel');
+        
+        // Guardar el rol del usuario
+        localStorage.setItem('userRole', data.role); // 'role' devuelto por el backend
+
+        // Redirigir según el rol
+        if (data.role === 'Admin') {
+          navigate('/admin/panel');
+        } else {
+          navigate('/admin/formulario'); // Redirigir a esta ruta si no es Admin
+        }
       } else {
         setMessage(data.message || 'Error al iniciar sesión');
       }
@@ -43,13 +51,10 @@ const Login = () => {
       setMessage('Error al iniciar sesión');
     }
   };
-  
-  
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
-
 
   return (
     <div className='FondoLogin'>

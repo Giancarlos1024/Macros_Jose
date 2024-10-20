@@ -27,12 +27,16 @@ const postLogin = (req, res) => {
     if (results.length > 0) {
       const user = results[0];
 
+      // Compara la contraseña
       if (password === user.contrasena) {
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+        // Crea un token que incluya el ID y el rol del usuario
+        const token = jwt.sign({ id: user.id, rol: user.roles }, process.env.JWT_SECRET, {
           expiresIn: '1h'
         });
         console.log('Inicio de sesión exitoso para usuario:', username);
-        res.status(200).json({ message: 'Login successful!', token });
+        
+        // Incluye el rol en la respuesta
+        res.status(200).json({ message: 'Login successful!', token, role: user.roles });
       } else {
         console.warn('Contraseña inválida para usuario:', username);
         res.status(401).json({ message: 'Invalid username or password' });

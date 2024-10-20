@@ -9,7 +9,10 @@ const Admin = () => {
   // Obtiene el contexto del usuario
   const { username } = useContext(UserContext);
   
+  const userRole = localStorage.getItem('userRole'); // Obtener el rol del usuario
   const [formattedDate, setFormattedDate] = useState('');
+
+  const isAdmin = userRole === 'Admin'; // Verificar si el usuario es Admin
 
   useEffect(() => {
     const updateDate = () => {
@@ -40,6 +43,7 @@ const Admin = () => {
   const handleLogout = () => {
     localStorage.removeItem('userToken');
     localStorage.removeItem('username'); // Limpia el nombre de usuario también
+    localStorage.removeItem('userRole'); // Limpia el rol del usuario
     navigate('/');
   };
 
@@ -73,20 +77,22 @@ const Admin = () => {
         <div className="nav-container">
           <nav>
             <ul>
-              <li>
-                <NavLink
-                  to="/admin/panel"
-                  className={({ isActive }) => (isActive ? 'active' : '')}
-                >
-                  {({ isActive }) => (
-                    <>
-                      {isActive && <div className="active-bar"></div>}
-                      <img src={isActive ? "/img/homeActivo.png" : "/img/home.png"} alt="error" className='iconNavDashboard' />
-                      Panel de control
-                    </>
-                  )}
-                </NavLink>
-              </li>
+              {isAdmin && ( // Solo muestra el Panel de control si el usuario es Admin
+                <li>
+                  <NavLink
+                    to="/admin/panel"
+                    className={({ isActive }) => (isActive ? 'active' : '')}
+                  >
+                    {({ isActive }) => (
+                      <>
+                        {isActive && <div className="active-bar"></div>}
+                        <img src={isActive ? "/img/homeActivo.png" : "/img/home.png"} alt="error" className='iconNavDashboard' />
+                        Panel de control
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              )}
               <li>
                 <NavLink
                   to="/admin/formulario"

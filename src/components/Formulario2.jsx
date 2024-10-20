@@ -33,7 +33,7 @@ export const Formulario2 = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pdfData, setPdfData] = useState(null);
   const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
-
+  const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user');
 
   useEffect(() => {
     fetchRecords();
@@ -253,145 +253,150 @@ export const Formulario2 = () => {
 
   return (
     <div>
-      <h2>{editing ? 'MODIFICAR REGISTRO NOT SSB' : 'CREAR REGISTRO NOT SSB'}</h2>
-      <form className='form-notsbb' onSubmit={handleSubmit}>
+      {userRole === 'Admin' && (
         <div>
-          <div>
-            <label>FALLA</label>
-            <input
-              type="text"
-              name="Falla"
-              value={form.Falla}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>NOTIF</label>
-            <input
-              type="text"
-              name="Notif"
-              value={form.Notif}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>ZONA</label>
-            <input
-              type="text"
-              name="Zona"
-              value={form.Zona}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>AGENCIA</label>
-            <input
-              type="text"
-              name="Agencia"
-              value={form.Agencia}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>NOMBRE</label>
-            <input
-              type="text"
-              name="Nombre"
-              value={form.Nombre}
-              onChange={handleChange}
-            />
-          </div>
+          <h2>{editing ? 'MODIFICAR REGISTRO NOT SSB' : 'CREAR REGISTRO NOT SSB'}</h2>
+          <form className='form-notsbb' onSubmit={handleSubmit}>
+            <div>
+              <div>
+                <label>FALLA</label>
+                <input
+                  type="text"
+                  name="Falla"
+                  value={form.Falla}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>NOTIF</label>
+                <input
+                  type="text"
+                  name="Notif"
+                  value={form.Notif}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>ZONA</label>
+                <input
+                  type="text"
+                  name="Zona"
+                  value={form.Zona}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>AGENCIA</label>
+                <input
+                  type="text"
+                  name="Agencia"
+                  value={form.Agencia}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>NOMBRE</label>
+                <input
+                  type="text"
+                  name="Nombre"
+                  value={form.Nombre}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>TARIFA</label>
+                <input
+                  type="text"
+                  name="Tarifa"
+                  value={form.Tarifa}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>RPU</label>
+                <input
+                  type="text"
+                  name="RPU"
+                  value={form.RPU}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>CUENTA</label>
+                <input
+                  type="text"
+                  name="Cuenta"
+                  value={form.Cuenta}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>ELABORO</label>
+                <input
+                  type="datetime-local"
+                  name="Elaboro"
+                  value={form.Elaboro}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>KWH</label>
+                <input
+                  type="text"
+                  name="Kwh"
+                  value={form.Kwh}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div>
+              <div>
+                <label>ENERGIA</label>
+                <input
+                  type="text"
+                  name="Energia"
+                  value={form.Energia}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>TOTAL</label>
+                <input
+                  type="text"
+                  name="Total"
+                  value={form.Total}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>FECHA_ULTIMO_STATUS</label>
+                <input
+                  type="datetime-local"
+                  name="Fecha_Ultimo_Status"
+                  value={form.Fecha_Ultimo_Status}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>STATUS_ACTUAL</label>
+                <input
+                  type="text"
+                  name="Status_Actual"
+                  value={form.Status_Actual}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+            <div className='botones-bot'>
+              <button className='button-notssb' type="submit">{editing ? 'Actualizar' : 'Crear'}</button>
+              {editing && <button type="button" className='button-notssb' onClick={() => { setEditing(false); setCurrentId(null); setForm({ Id: '', Falla: '', Notif: '', Zona: '', Agencia: '', Nombre: '', Tarifa: '', RPU: '', Cuenta: '', Elaboro: '', Kwh: '', Energia: '', Total: '', Fecha_Ultimo_Status: '', Status_Actual: '' }); }}>Cancelar</button>}
+            </div>
+          </form>
         </div>
-        <div>
-          <div>
-            <label>TARIFA</label>
-            <input
-              type="text"
-              name="Tarifa"
-              value={form.Tarifa}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>RPU</label>
-            <input
-              type="text"
-              name="RPU"
-              value={form.RPU}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>CUENTA</label>
-            <input
-              type="text"
-              name="Cuenta"
-              value={form.Cuenta}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>ELABORO</label>
-            <input
-              type="datetime-local"
-              name="Elaboro"
-              value={form.Elaboro}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>KWH</label>
-            <input
-              type="text"
-              name="Kwh"
-              value={form.Kwh}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div>
-          <div>
-            <label>ENERGIA</label>
-            <input
-              type="text"
-              name="Energia"
-              value={form.Energia}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>TOTAL</label>
-            <input
-              type="text"
-              name="Total"
-              value={form.Total}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>FECHA_ULTIMO_STATUS</label>
-            <input
-              type="datetime-local"
-              name="Fecha_Ultimo_Status"
-              value={form.Fecha_Ultimo_Status}
-              onChange={handleChange}
-            />
-          </div>
-          <div>
-            <label>STATUS_ACTUAL</label>
-            <input
-              type="text"
-              name="Status_Actual"
-              value={form.Status_Actual}
-              onChange={handleChange}
-            />
-          </div>
-        </div>
-        <div className='botones-bot'>
-          <button className='button-notssb' type="submit">{editing ? 'Actualizar' : 'Crear'}</button>
-          {editing && <button type="button" className='button-notssb' onClick={() => { setEditing(false); setCurrentId(null); setForm({ Id: '', Falla: '', Notif: '', Zona: '', Agencia: '', Nombre: '', Tarifa: '', RPU: '', Cuenta: '', Elaboro: '', Kwh: '', Energia: '', Total: '', Fecha_Ultimo_Status: '', Status_Actual: '' }); }}>Cancelar</button>}
-        </div>
-      </form>
+
+      )}
       <h2>REGISTROS DE NOT SSB</h2>
       <div className='contenedor-filtro'>
         <input 
@@ -429,7 +434,9 @@ export const Formulario2 = () => {
               <th>TOTAL</th>
               <th>FECHA_U_S</th>
               <th>STATUS_A</th>
-              <th>ACCIONES</th>
+              {userRole === 'Admin' && (
+                <th>ACCIONES</th>
+              )}
             </tr>
           </thead>
           <tbody>
@@ -449,10 +456,12 @@ export const Formulario2 = () => {
                 <td>{record.Total}</td>
                 <td>{record.Fecha_Ultimo_Status}</td>
                 <td>{record.Status_Actual}</td>
+                {userRole === 'Admin' &&(
                 <td>
                   <button className='tabla-notsbb tablebutton-editar' onClick={() => handleEdit(record.Id)}>Editar</button>
                   <button className='tabla-notsbb tablebutton-eliminar' onClick={() => handleDelete(record.Id)}>Eliminar</button>
                 </td>
+                )}
               </tr>
             ))}
           </tbody>

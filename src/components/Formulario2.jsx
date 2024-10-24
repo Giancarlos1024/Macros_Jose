@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../css/Not_ssb.css';
 import Modal from 'react-modal';
 import jsPDF from 'jspdf';
+import { PDFDocument, rgb } from 'pdf-lib';
 export const Formulario2 = () => {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({
@@ -21,6 +22,9 @@ export const Formulario2 = () => {
     Fecha_Ultimo_Status: '',
     Status_Actual: ''
   });
+
+  const [oficinas, setOficinas] = useState([]);
+
   const [editing, setEditing] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [filters, setFilters] = useState({
@@ -34,6 +38,8 @@ export const Formulario2 = () => {
   const [pdfData, setPdfData] = useState(null);
   const [selectedPDF, setSelectedPDF] = useState(null); // Estado para tipo de PDF
   const [userRole, setUserRole] = useState(localStorage.getItem('userRole') || 'user');
+
+  const [selectedRecord, setselectedRecord] = useState(null);
 
   useEffect(() => {
     fetchRecords();
@@ -235,6 +241,579 @@ export const Formulario2 = () => {
     setIsModalOpen(true);
   };
 
+  const generatePDF3 = async() => {
+    
+    if (!selectedRecord) {
+      console.error('No hay oficina seleccionada');
+      return; // Salir si no hay oficina seleccionada
+  }
+
+  const existingPdfBytes = await fetch('/01_ajuste_por_revision_EF_V3_sind.pdf').then(res => res.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+  const { height } = firstPage.getSize();
+
+  firstPage.drawText(`${selectedRecord.Nombre}`, {
+      x: 110,
+      y: height - 202,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.Zona}`, {
+      x: 120,
+      y: height - 214,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.Agencia}`, {
+      x: 122,
+      y: height - 240,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.RPU}`, {
+      x: 102,
+      y: height - 252,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+
+  // Función para dibujar texto limitado en líneas
+  const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+          let y = startY;
+          let startIndex = 0;
+
+          // Dibuja los primeros 54 caracteres
+          if (text.length > 0) {
+              const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+              firstPage.drawText(firstLine, {
+                  x: x,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += limit; // Mover el índice para la próxima línea
+          }
+
+          // Dibuja el resto del texto a partir de la nueva posición
+          while (startIndex < text.length) {
+              const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+              firstPage.drawText(line, {
+                  x: newPositionX,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += charLimitRest; // Mover el índice para la próxima línea
+          }
+      };
+
+      // Dibuja el texto de Obs_notif
+      drawLimitedLineText(
+          `${selectedRecord.Obs_notif}`,
+          292,          // Posición inicial para los primeros 54 caracteres
+          height - 418, // Altura inicial
+          8,            // Tamaño de texto
+          60,           // Límite de caracteres para la primera línea
+          70,           // Nueva posición X para el resto
+          93            // Límite de caracteres para el resto del texto
+      );
+
+      // Función para dibujar texto limitado en líneas
+      const drawLimitedLineText2 = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+          let y = startY;
+          let startIndex = 0;
+
+          // Dibuja los primeros 54 caracteres
+          if (text.length > 0) {
+              const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+              firstPage.drawText(firstLine, {
+                  x: x,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += limit; // Mover el índice para la próxima línea
+          }
+
+          // Dibuja el resto del texto a partir de la nueva posición
+          while (startIndex < text.length) {
+              const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+              firstPage.drawText(line, {
+                  x: newPositionX,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += charLimitRest; // Mover el índice para la próxima línea
+          }
+      };
+
+      // Dibuja el texto de Obs_edo
+      drawLimitedLineText2(
+          `${selectedRecord.Obs_edo}`,
+          70,           // Posición inicial para los primeros 54 caracteres
+          height - 580, // Altura inicial
+          8,            // Tamaño de texto
+          116,          // Límite de caracteres para la primera línea
+          70,           // Nueva posición X para el resto
+          93            // Límite de caracteres para el resto del texto
+      );
+
+      // Obtener la fecha actual y formatearla
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+
+      // Dibujar la fecha en el PDF
+      firstPage.drawText(currentDate, {
+          x: 394,              // Posición X
+          y: height - 149,     // Posición Y, ajusta según sea necesario
+          size: 10,             // Tamaño de texto
+          color: rgb(0, 0, 0), // Color del texto
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfData(url);
+      setSelectedPDF('pdf3');
+      setIsModalOpen(true);
+  };
+  const generatePDF4 = async() => {
+  
+    if (!selectedRecord) {
+      console.error('No hay oficina seleccionada');
+      return; // Salir si no hay oficina seleccionada
+  }
+
+  const existingPdfBytes = await fetch('/02_ajuste_por_revision_FM_V3_sind.pdf').then(res => res.arrayBuffer());
+  const pdfDoc = await PDFDocument.load(existingPdfBytes);
+  const pages = pdfDoc.getPages();
+  const firstPage = pages[0];
+  const { height } = firstPage.getSize();
+
+  firstPage.drawText(`${selectedRecord.Nombre}`, {
+      x: 108,
+      y: height - 188,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.Zona}`, {
+      x: 120,
+      y: height - 200,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.Agencia}`, {
+      x: 124,
+      y: height - 226,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+  firstPage.drawText(`${selectedRecord.RPU}`, {
+      x: 100,
+      y: height - 238,
+      size: 9,
+      color: rgb(0, 0, 0),
+  });
+
+  // Función para dibujar texto limitado en líneas
+  const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+          let y = startY;
+          let startIndex = 0;
+
+          // Dibuja los primeros 54 caracteres
+          if (text.length > 0) {
+              const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+              firstPage.drawText(firstLine, {
+                  x: x,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += limit; // Mover el índice para la próxima línea
+          }
+
+          // Dibuja el resto del texto a partir de la nueva posición
+          while (startIndex < text.length) {
+              const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+              firstPage.drawText(line, {
+                  x: newPositionX,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += charLimitRest; // Mover el índice para la próxima línea
+          }
+      };
+
+      // Dibuja el texto de Obs_notif
+      drawLimitedLineText(
+          `${selectedRecord.Obs_notif}`,
+          292,          // Posición inicial para los primeros 54 caracteres
+          height - 404, // Altura inicial
+          8,            // Tamaño de texto
+          60,           // Límite de caracteres para la primera línea
+          70,           // Nueva posición X para el resto
+          93            // Límite de caracteres para el resto del texto
+      );
+
+      // Función para dibujar texto limitado en líneas
+      const drawLimitedLineText2 = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+          let y = startY;
+          let startIndex = 0;
+
+          // Dibuja los primeros 54 caracteres
+          if (text.length > 0) {
+              const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+              firstPage.drawText(firstLine, {
+                  x: x,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += limit; // Mover el índice para la próxima línea
+          }
+
+          // Dibuja el resto del texto a partir de la nueva posición
+          while (startIndex < text.length) {
+              const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+              firstPage.drawText(line, {
+                  x: newPositionX,
+                  y: y,
+                  size: size,
+                  color: rgb(0, 0, 0),
+              });
+              y -= size + 2; // Ajusta la posición para la siguiente línea
+              startIndex += charLimitRest; // Mover el índice para la próxima línea
+          }
+      };
+
+      // Dibuja el texto de Obs_edo
+      drawLimitedLineText2(
+          `${selectedRecord.Obs_edo}`,
+          223,           // Posición inicial para los primeros 54 caracteres
+          height - 470, // Altura inicial
+          8,            // Tamaño de texto
+          78,          // Límite de caracteres para la primera línea
+          70,           // Nueva posición X para el resto
+          93            // Límite de caracteres para el resto del texto
+      );
+
+      // Obtener la fecha actual y formatearla
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+
+      // Dibujar la fecha en el PDF
+      firstPage.drawText(currentDate, {
+          x: 394,              // Posición X
+          y: height - 148,     // Posición Y, ajusta según sea necesario
+          size: 10,             // Tamaño de texto
+          color: rgb(0, 0, 0), // Color del texto
+      });
+
+      const pdfBytes = await pdfDoc.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      setPdfData(url);
+      setSelectedPDF('pdf4');
+      setIsModalOpen(true);
+  };
+  const generatePDF5 = async() => {
+    
+    if (!selectedRecord) {
+      console.error('No hay oficina seleccionada');
+      return; // Salir si no hay oficina seleccionada
+    }
+  
+    const existingPdfBytes = await fetch('/03_ajuste_por_revision_UI_sin_contrato_V3_sind.pdf').then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { height } = firstPage.getSize();
+  
+    firstPage.drawText(`${selectedRecord.Nombre}`, {
+        x: 190,
+        y: height - 213,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedRecord.Zona}`, {
+        x: 120,
+        y: height - 224,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedRecord.Agencia}`, {
+        x: 124,
+        y: height - 250,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+    // firstPage.drawText(`${selectedRecord.rpu}`, {
+    //     x: 100,
+    //     y: height - 238,
+    //     size: 9,
+    //     color: rgb(0, 0, 0),
+    // });
+  
+    // Función para dibujar texto limitado en líneas
+    const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+            let y = startY;
+            let startIndex = 0;
+  
+            // Dibuja los primeros 54 caracteres
+            if (text.length > 0) {
+                const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+                firstPage.drawText(firstLine, {
+                    x: x,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += limit; // Mover el índice para la próxima línea
+            }
+  
+            // Dibuja el resto del texto a partir de la nueva posición
+            while (startIndex < text.length) {
+                const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+                firstPage.drawText(line, {
+                    x: newPositionX,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += charLimitRest; // Mover el índice para la próxima línea
+            }
+        };
+  
+        // Dibuja el texto de Obs_notif
+        drawLimitedLineText(
+            `${selectedRecord.Obs_notif}`,
+            244,           // Posición inicial para los primeros 54 caracteres
+            height - 465, // Altura inicial
+            8,            // Tamaño de texto
+            68,          // Límite de caracteres para la primera línea
+            70,           // Nueva posición X para el resto
+            93            // Límite de caracteres para el resto del texto
+        );
+  
+        // Función para dibujar texto limitado en líneas
+        const drawLimitedLineText2 = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+            let y = startY;
+            let startIndex = 0;
+  
+            // Dibuja los primeros 54 caracteres
+            if (text.length > 0) {
+                const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+                firstPage.drawText(firstLine, {
+                    x: x,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += limit; // Mover el índice para la próxima línea
+            }
+  
+            // Dibuja el resto del texto a partir de la nueva posición
+            while (startIndex < text.length) {
+                const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+                firstPage.drawText(line, {
+                    x: newPositionX,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += charLimitRest; // Mover el índice para la próxima línea
+            }
+        };
+  
+        // Dibuja el texto de Obs_edo
+        // drawLimitedLineText2(
+        //     `${selectedRecord.Obs_edo}`,
+        //     223,           // Posición inicial para los primeros 54 caracteres
+        //     height - 470, // Altura inicial
+        //     8,            // Tamaño de texto
+        //     78,          // Límite de caracteres para la primera línea
+        //     70,           // Nueva posición X para el resto
+        //     93            // Límite de caracteres para el resto del texto
+        // );
+  
+        // Obtener la fecha actual y formatearla
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+  
+        // Dibujar la fecha en el PDF
+        firstPage.drawText(currentDate, {
+            x: 393,              // Posición X
+            y: height - 135,     // Posición Y, ajusta según sea necesario
+            size: 10,             // Tamaño de texto
+            color: rgb(0, 0, 0), // Color del texto
+        });
+  
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setPdfData(url);
+        setSelectedPDF('pdf5');
+        setIsModalOpen(true);
+  };
+  const generatePDF6 = async() => {
+    if (!selectedRecord) {
+      console.error('No hay oficina seleccionada');
+      return; // Salir si no hay oficina seleccionada
+    }
+  
+    const existingPdfBytes = await fetch('/04_ajuste_por_revision_UI_con_contrato_V3_sind.pdf').then(res => res.arrayBuffer());
+    const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { height } = firstPage.getSize();
+  
+    firstPage.drawText(`${selectedRecord.Nombre}`, {
+        x: 110,
+        y: height - 188,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedRecord.Zona}`, {
+        x: 120,
+        y: height - 200,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+    // firstPage.drawText(`${selectedRecord.Ciudad}`, {
+    //     x: 122,
+    //     y: height - 230,
+    //     size: 9,
+    //     color: rgb(0, 0, 0),
+    // });
+    firstPage.drawText(`${selectedRecord.RPU}`, {
+        x: 102,
+        y: height - 225,
+        size: 9,
+        color: rgb(0, 0, 0),
+    });
+  
+    // Función para dibujar texto limitado en líneas
+    const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+            let y = startY;
+            let startIndex = 0;
+  
+            // Dibuja los primeros 54 caracteres
+            if (text.length > 0) {
+                const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+                firstPage.drawText(firstLine, {
+                    x: x,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += limit; // Mover el índice para la próxima línea
+            }
+  
+            // Dibuja el resto del texto a partir de la nueva posición
+            while (startIndex < text.length) {
+                const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+                firstPage.drawText(line, {
+                    x: newPositionX,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += charLimitRest; // Mover el índice para la próxima línea
+            }
+        };
+  
+        // Dibuja el texto de Obs_notif
+        drawLimitedLineText(
+            `${selectedRecord.Obs_notif}`,
+            292,           // Posición inicial para los primeros 54 caracteres
+            height - 403, // Altura inicial
+            8,            // Tamaño de texto
+            60,          // Límite de caracteres para la primera línea
+            70,           // Nueva posición X para el resto
+            93            // Límite de caracteres para el resto del texto
+        );
+  
+        // Función para dibujar texto limitado en líneas
+        const drawLimitedLineText2 = (text, x, startY, size, limit, newPositionX, charLimitRest) => {
+            let y = startY;
+            let startIndex = 0;
+  
+            // Dibuja los primeros 54 caracteres
+            if (text.length > 0) {
+                const firstLine = text.substring(startIndex, Math.min(startIndex + limit, text.length));
+                firstPage.drawText(firstLine, {
+                    x: x,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += limit; // Mover el índice para la próxima línea
+            }
+  
+            // Dibuja el resto del texto a partir de la nueva posición
+            while (startIndex < text.length) {
+                const line = text.substring(startIndex, startIndex + charLimitRest); // Límite de caracteres para el resto
+                firstPage.drawText(line, {
+                    x: newPositionX,
+                    y: y,
+                    size: size,
+                    color: rgb(0, 0, 0),
+                });
+                y -= size + 2; // Ajusta la posición para la siguiente línea
+                startIndex += charLimitRest; // Mover el índice para la próxima línea
+            }
+        };
+  
+        //Dibuja el texto de Obs_edo
+        drawLimitedLineText2(
+            `${selectedRecord.Obs_edo}`,
+            105,           // Posición inicial para los primeros 54 caracteres
+            height - 555, // Altura inicial
+            8,            // Tamaño de texto
+            100,          // Límite de caracteres para la primera línea
+            70,           // Nueva posición X para el resto
+            104           // Límite de caracteres para el resto del texto
+        );
+  
+        // Obtener la fecha actual y formatearla
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const currentDate = new Date().toLocaleDateString('es-ES', options); // Formato: "miércoles, 23 de octubre de 2024"
+  
+        // Dibujar la fecha en el PDF
+        firstPage.drawText(currentDate, {
+            x: 393,              // Posición X
+            y: height - 148,     // Posición Y, ajusta según sea necesario
+            size: 10,             // Tamaño de texto
+            color: rgb(0, 0, 0), // Color del texto
+        });
+  
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+        setPdfData(url);
+        setSelectedPDF('pdf6');
+        setIsModalOpen(true);
+  };
+
+
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -249,6 +828,12 @@ export const Formulario2 = () => {
       link.download = `Sobre Manual_${form.Notif || ''}.pdf`;
       link.click();
     }
+  };
+
+
+  const handleOnClick = (record) => {
+    setselectedRecord(record);  // Almacena la oficina en el estado
+    generatePDF(record);          // Genera el PDF
   };
 
   return (
@@ -441,9 +1026,11 @@ export const Formulario2 = () => {
           </thead>
           <tbody>
             {records.map((record) => (
-              <tr key={record.Id} onClick={() => generatePDF(record)}>
+              <tr key={record.Id}>
                 <td>{record.Falla}</td>
-                <td>{record.Notif}</td>
+                <td onClick={() => handleOnClick(record)} style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+                  {record.Notif}
+                </td>
                 <td>{record.Zona}</td>
                 <td>{record.Agencia}</td>
                 <td>{record.Tarifa}</td>
@@ -501,8 +1088,12 @@ export const Formulario2 = () => {
       >
         <h2>Vista Previa del PDF</h2>
         <div>
-          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>Sobre Manual</button>
-          <button onClick={() => { generatePDF2(selectedPDF); }}>Ajuste de Revisión-EV F3</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF(selectedPDF); }}>S-Manual</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF2(selectedPDF); }}>AR-EV</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF3(selectedPDF); }}>AR-EF</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF4(selectedPDF); }}>AR-FM</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF5(selectedPDF); }}>AR-UI-SC</button>
+          <button style={{margin:"0px 5px"}} onClick={() => { generatePDF6(selectedPDF); }}>AR-UI-CC</button>
         </div>
         {pdfData && <iframe src={pdfData} width="100%" height="100%"></iframe>}
         <button style={{margin:"0px 5px"}} onClick={closeModal}>Cerrar</button>

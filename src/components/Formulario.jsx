@@ -248,6 +248,37 @@ export const Formulario = () => {
         size: 9,
         color: rgb(0, 0, 0),
     });
+    firstPage.drawText(`${selectedOficina.Notif}`, {
+      x: 120,
+      y: height - 140,
+      size: 9,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`${selectedOficina.Fecha_Elab}`, {
+      x: 120,
+      y: height - 150,
+      size: 9,
+      color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedOficina.Fecha_Insp}`, {
+      x: 120,
+      y: height - 160,
+      size: 9,
+      color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedOficina.Fecha_Inicio}`, {
+      x: 120,
+      y: height - 170,
+      size: 9,
+      color: rgb(0, 0, 0),
+    });
+    firstPage.drawText(`${selectedOficina.Fecha_Final}`, {
+      x: 120,
+      y: height - 180,
+      size: 9,
+      color: rgb(0, 0, 0),
+    });
 
     // Función para dibujar texto limitado en líneas
     const drawLimitedLineText = (text, x, startY, size, limit, newPositionX, charLimitRest) => {

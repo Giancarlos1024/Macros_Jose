@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef  } from 'react';
 import jsPDF from 'jspdf';
 import { PDFDocument, rgb } from 'pdf-lib';
+import uploadIcon from '../../public/img/excel.png';
 import fs from 'fs'; // Si trabajas con Node.js, si no puedes usar fetch
 import Modal from 'react-modal';
 import '../css/Formulario.css';
@@ -222,6 +223,7 @@ export const Formulario = () => {
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const pages = pdfDoc.getPages();
     const firstPage = pages[0];
+    const secondPage = pages[1];
     const { height } = firstPage.getSize();
 
     firstPage.drawText(`${selectedOficina.Nombre}`, {
@@ -248,35 +250,104 @@ export const Formulario = () => {
         size: 9,
         color: rgb(0, 0, 0),
     });
-    firstPage.drawText(`${selectedOficina.Notif}`, {
-      x: 120,
-      y: height - 140,
+
+    const yearFechaElab = new Date(selectedOficina.Fecha_Elab).getFullYear();
+    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab} `, {
+      x: 510,
+      y: height - 112,
       size: 9,
       color: rgb(0, 0, 0),
     });
 
-    firstPage.drawText(`${selectedOficina.Fecha_Elab}`, {
-      x: 120,
-      y: height - 150,
+    const yearFechaElab2 = new Date(selectedOficina.Fecha_Elab).getFullYear();
+    firstPage.drawText(`${selectedOficina.Notif} / ${yearFechaElab2}`, {
+      x: 510,
+      y: height - 124,
       size: 9,
       color: rgb(0, 0, 0),
     });
-    firstPage.drawText(`${selectedOficina.Fecha_Insp}`, {
-      x: 120,
-      y: height - 160,
-      size: 9,
+
+    // Obtener el día, mes y año por separado
+    const fechaInsp = new Date(selectedOficina.Fecha_Insp);
+    const day = fechaInsp.getDate(); // Día (4)
+    const month = fechaInsp.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
+    const year = fechaInsp.getFullYear(); // Año (2021)
+
+    // Dibujar cada parte en posiciones específicas
+    firstPage.drawText(`${day}`, {
+      x: 90,          // Posición X del día
+      y: height - 341, // Posición Y del día
+      size: 10,
       color: rgb(0, 0, 0),
     });
-    firstPage.drawText(`${selectedOficina.Fecha_Inicio}`, {
-      x: 120,
-      y: height - 170,
-      size: 9,
+
+    firstPage.drawText(`${month}`, {
+      x: 125,          // Posición X del mes
+      y: height - 341, // Posición Y del mes
+      size: 10,
       color: rgb(0, 0, 0),
     });
-    firstPage.drawText(`${selectedOficina.Fecha_Final}`, {
-      x: 120,
-      y: height - 180,
-      size: 9,
+
+    firstPage.drawText(`${year}`, {
+      x: 190,          // Posición X del año
+      y: height - 341, // Posición Y del año
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+  
+     // Obtener el día, mes y año por separado
+    const fechaInicio = new Date(selectedOficina.Fecha_Inicio);
+    const day2 = fechaInicio.getDate(); // Día (4)
+    const month2 = fechaInicio.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
+    const year2 = fechaInicio.getFullYear(); // Año (2021)
+
+    // Dibujar cada parte en posiciones específicas
+    firstPage.drawText(`${day2}`, {
+      x: 380,          // Posición X del día
+      y: height - 556, // Posición Y del día
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`${month2}`, {
+      x: 410,          // Posición X del mes
+      y: height - 556, // Posición Y del mes
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`${year2}`, {
+      x: 467,          // Posición X del año
+      y: height - 556, // Posición Y del año
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    const fechaFinal = new Date(selectedOficina.Fecha_Final);
+    const day3 = fechaFinal.getDate(); // Día (4)
+    const month3 = fechaFinal.toLocaleDateString('es-ES', { month: 'long' }); // Mes en texto (marzo)
+    const year3 = fechaFinal.getFullYear(); // Año (2021)
+
+    // Dibujar cada parte en posiciones específicas
+    firstPage.drawText(`${day3}`, {
+      x: 510,          // Posición X del día
+      y: height - 556, // Posición Y del día
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`${month3}`, {
+      x: 70,          // Posición X del mes
+      y: height - 570, // Posición Y del mes
+      size: 10,
+      color: rgb(0, 0, 0),
+    });
+
+    firstPage.drawText(`${year3}`, {
+      x: 138,          // Posición X del año
+      y: height - 570, // Posición Y del año
+      size: 10,
       color: rgb(0, 0, 0),
     });
 
@@ -358,12 +429,12 @@ export const Formulario = () => {
         // Dibuja el texto de Obs_edo
         drawLimitedLineText2(
             `${selectedOficina.Obs_edo}`,
-            70,           // Posición inicial para los primeros 54 caracteres
-            height - 580, // Altura inicial
+            153,           // Posición inicial para los primeros 54 caracteres
+            height - 581, // Altura inicial
             8,            // Tamaño de texto
-            116,          // Límite de caracteres para la primera línea
+            94,          // Límite de caracteres para la primera línea
             70,           // Nueva posición X para el resto
-            93            // Límite de caracteres para el resto del texto
+            105           // Límite de caracteres para el resto del texto
         );
 
         // Obtener la fecha actual y formatearla
@@ -377,6 +448,37 @@ export const Formulario = () => {
             size: 10,             // Tamaño de texto
             color: rgb(0, 0, 0), // Color del texto
         });
+
+        firstPage.drawText(`${selectedOficina.KHW_Total}`, {
+          x: 270,          // Posición X en la segunda página
+          y: height - 570, // Posición Y en la segunda página
+          size: 10,
+          color: rgb(0, 0, 0),
+        });
+
+        firstPage.drawText(`${selectedOficina.Tarifa}`, {
+          x: 445,          // Posición X en la segunda página
+          y: height - 633, // Posición Y en la segunda página
+          size: 10,
+          color: rgb(0, 0, 0),
+        });
+
+        // Escribe en la segunda página
+        secondPage.drawText(`${selectedOficina.Imp_Energia}`, {
+          x: 380,          // Posición X en la segunda página
+          y: height - 112, // Posición Y en la segunda página
+          size: 10,
+          color: rgb(0, 0, 0),
+        });
+
+        secondPage.drawText(`${selectedOficina.Imp_Total}`, {
+          x: 380,          // Posición X en la segunda página
+          y: height - 149, // Posición Y en la segunda página
+          size: 10,
+          color: rgb(0, 0, 0),
+        });
+
+
 
         const pdfBytes = await pdfDoc.save();
         const blob = new Blob([pdfBytes], { type: 'application/pdf' });
@@ -838,6 +940,22 @@ export const Formulario = () => {
     generatePDF(oficina);          // Genera el PDF
   };
 
+  const [fileName, setFileName] = useState('');
+  const fileInputRef = useRef(null);
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    if (event.target.files.length > 0) {
+      setFileName(event.target.files[0].name);
+    } else {
+      setFileName('');
+    }
+  };
+
+
   return (
     <div>
       {userRole === 'Admin' && (
@@ -923,6 +1041,23 @@ export const Formulario = () => {
       )}
       <h1>Registros de SINOT</h1>
       <div className='contenedor-filtro'>
+        <div className='contenedor-excel'>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={handleFileChange}
+            />
+          <div className='contenedor-archivo-subido'>
+            <img
+              src={uploadIcon}
+              alt="Subir Archivo"
+              className="uploadIcon"
+              onClick={handleClick}
+              />
+            {fileName && <p className="fileName">{fileName}</p>}
+          </div>
+        </div>
         <input 
         type="text" 
         name="notif" 

@@ -13,6 +13,7 @@
     /* background-color: #28a745; */
     display: flex;
     justify-content: end;
+    position: relative;
   }
   .contenedor-filtro > input{
     margin-left: 5px;
@@ -183,4 +184,33 @@ input[type="number"] {
 .encabezados-sinot > tr > th{
   /* background-color: #218838; */
   padding: 15px;
+}
+
+.contenedor-excel{
+  position: absolute;
+  left: 0px;
+}
+
+.uploadIcon {
+  width: 50px; /* Ajusta el tamaño según sea necesario */
+  height: 50px;
+  cursor: pointer;
+}
+
+/* Estilos para el contenedor del archivo adjunto */
+
+
+/* Estilos para el nombre del archivo */
+.fileName {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+  word-break: break-all;
+  text-align: center;
+}
+.contenedor-archivo-subido{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  
 }

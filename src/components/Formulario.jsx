@@ -1,10 +1,10 @@
 import React, { useState, useEffect,useRef  } from 'react';
 import jsPDF from 'jspdf';
 import { PDFDocument, rgb } from 'pdf-lib';
-import uploadIcon from '../../public/img/excel.png';
 import fs from 'fs'; // Si trabajas con Node.js, si no puedes usar fetch
 import Modal from 'react-modal';
 import '../css/Formulario.css';
+import FileUpload from './FileUpload';
 
 export const Formulario = () => {
   const [formData, setFormData] = useState({
@@ -940,21 +940,6 @@ export const Formulario = () => {
     generatePDF(oficina);          // Genera el PDF
   };
 
-  const [fileName, setFileName] = useState('');
-  const fileInputRef = useRef(null);
-
-  const handleClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = (event) => {
-    if (event.target.files.length > 0) {
-      setFileName(event.target.files[0].name);
-    } else {
-      setFileName('');
-    }
-  };
-
 
   return (
     <div>
@@ -1041,23 +1026,7 @@ export const Formulario = () => {
       )}
       <h1>Registros de SINOT</h1>
       <div className='contenedor-filtro'>
-        <div className='contenedor-excel'>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            onChange={handleFileChange}
-            />
-          <div className='contenedor-archivo-subido'>
-            <img
-              src={uploadIcon}
-              alt="Subir Archivo"
-              className="uploadIcon"
-              onClick={handleClick}
-              />
-            {fileName && <p className="fileName">{fileName}</p>}
-          </div>
-        </div>
+        <FileUpload/>
         <input 
         type="text" 
         name="notif" 

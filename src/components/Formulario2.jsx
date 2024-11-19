@@ -2,7 +2,7 @@ import React, { useState, useEffect,useRef  } from 'react';
 import '../css/Not_ssb.css';
 import Modal from 'react-modal';
 import jsPDF from 'jspdf';
-import uploadIcon1 from '../../public/img/excel.png';
+import uploadIcon1 from '/public/img/excel.png';
 import { PDFDocument, rgb } from 'pdf-lib';
 export const Formulario2 = () => {
   const [records, setRecords] = useState([]);

@@ -188,7 +188,12 @@ input[type="number"] {
 
 .contenedor-excel{
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
   left: 0px;
+  top: -20px;
 }
 
 .uploadIcon {
@@ -212,5 +217,38 @@ input[type="number"] {
   display: flex;
   flex-direction: row;
   align-items: center;
+  /* background-color: #0056b3; */
+  justify-content: center;
   
+  
+  
+}
+.contenedor-excel2{
+  position: absolute;
+  left: 250px;
+  top: -20px;
+  /* background-color: #0056b3; */
+}
+.textoexcel{
+  font-size: 10px;
+  color: #6e726c;
+  font-weight: bold;
+}
+.importExcel{
+  /* background-color: yellow; */
+  /* padding: 5px; */
+  /* margin: 5px 0px; */
+  /* width: 100%; */
+}
+.buttonArchivo{
+  background-color: rgb(27, 131, 13);
+  top: 60px;
+  left: 0px;
+  font-size: 10px;
+  position: absolute;
+  padding: 8px 5px;
+  cursor: pointer;
+}
+.buttonArchivo:hover{
+  background-color: #0f0f0f;
 }

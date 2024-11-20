@@ -1,9 +1,9 @@
-import React, { useState, useEffect,useRef  } from 'react';
+import React, { useState, useEffect} from 'react';
 import '../css/Not_ssb.css';
 import Modal from 'react-modal';
 import jsPDF from 'jspdf';
-import uploadIcon1 from '/public/img/excel.png';
 import { PDFDocument, rgb } from 'pdf-lib';
+
 export const Formulario2 = () => {
   const [records, setRecords] = useState([]);
   const [form, setForm] = useState({
@@ -837,20 +837,7 @@ export const Formulario2 = () => {
     generatePDF(record);          // Genera el PDF
   };
 
-  const [fileName1, setFileName1] = useState('');
-  const fileInputRef1 = useRef(null);
 
-  const handleClick1 = () => {
-    fileInputRef1.current.click();
-  };
-
-  const handleFileChange1 = (event) => {
-    if (event.target.files.length > 0) {
-      setFileName1(event.target.files[0].name);
-    } else {
-      setFileName1('');
-    }
-  };
 
   return (
     <div>
@@ -1000,23 +987,7 @@ export const Formulario2 = () => {
       )}
       <h2>REGISTROS DE NOT SSB</h2>
       <div className='contenedor-filtro'>
-        <div className='contenedor-excel'>
-          <input
-            type="file"
-            ref={fileInputRef1}
-            style={{ display: 'none' }}
-            onChange={handleFileChange1}
-            />
-          <div className='contenedor-archivo-subido'>
-            <img
-              src={uploadIcon1}
-              alt="Subir Archivo"
-              className="uploadIcon"
-              onClick={handleClick1}
-              />
-            {fileName1 && <p className="fileName">{fileName1}</p>}
-          </div>
-        </div>
+        
         <input 
           type="text" 
           name="notif" 

@@ -5,6 +5,7 @@ import fs from 'fs'; // Si trabajas con Node.js, si no puedes usar fetch
 import Modal from 'react-modal';
 import '../css/Formulario.css';
 import FileUpload from './FileUpload';
+import FileUploadNotssb from './FileUploadNotssb';
 
 export const Formulario = () => {
   const [formData, setFormData] = useState({
@@ -1026,7 +1027,10 @@ export const Formulario = () => {
       )}
       <h1>Registros de SINOT</h1>
       <div className='contenedor-filtro'>
-        <FileUpload/>
+        <div className='importExcel'>
+          <FileUpload/>
+          <FileUploadNotssb/>
+        </div>
         <input 
         type="text" 
         name="notif" 

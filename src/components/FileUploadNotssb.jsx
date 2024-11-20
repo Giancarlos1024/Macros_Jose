@@ -2,42 +2,42 @@ import React, { useState, useRef } from 'react';
 import uploadIcon from '/img/excel.png'; // Asegúrate de tener la ruta correcta
 import '../css/Formulario.css'; // Asegúrate de tener la ruta correcta
 
-const FileUpload = () => {
-  const [fileName, setFileName] = useState('');
-  const [file, setFile] = useState(null);
-  const fileInputRef = useRef(null);
+const FileUploadNotssb = () => {
+  const [fileName2, setFileName2] = useState('');
+  const [file, setFile2] = useState(null);
+  const fileInputRef2 = useRef(null);
 
   const handleClick = () => {
-    fileInputRef.current.click();
+    fileInputRef2.current.click();
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange2 = (event) => {
     if (event.target.files.length > 0) {
       const selectedFile = event.target.files[0];
-      setFileName(selectedFile.name);
-      setFile(selectedFile);
+      setFileName2(selectedFile.name);
+      setFile2(selectedFile);
     } else {
-      setFileName('');
-      setFile(null);
+      setFileName2('');
+      setFile2(null);
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload2 = () => {
     if (file) {
       const formData = new FormData();
       formData.append('file', file);
 
-      fetch('http://localhost:3000/api/upload', { // Cambia esta URL a la de tu endpoint
+      fetch('http://localhost:3000/apinot/upload2', { // Cambia esta URL a la de tu endpoint
         method: 'POST',
         body: formData,
       })
         .then(response => response.json())
         .then(data => {
-          alert('Archivo cargado exitosamente Sinot');
+          alert('Archivo cargado exitosamente Not ssb');
           // Aquí puedes manejar la respuesta del servidor
           // Limpiar el estado después de la carga si es necesario
-          setFileName('');
-          setFile(null);
+          setFileName2('');
+          setFile2(null);
         })
         .catch(error => {
           console.error('Error uploading file:', error);
@@ -46,14 +46,14 @@ const FileUpload = () => {
   };
 
   return (
-    <div className='contenedor-excel'>
-      <p className='textoexcel'>SINOT IMPORTAR</p>
+    <div className='contenedor-excel2'>
+      <p className='textoexcel'>NOT SSB IMPORTAR</p>
       <div>
         <input
           type="file"
-          ref={fileInputRef}
+          ref={fileInputRef2}
           style={{ display: 'none' }}
-          onChange={handleFileChange}
+          onChange={handleFileChange2}
         />
         <div className='contenedor-archivo-subido'>
           <img
@@ -62,18 +62,16 @@ const FileUpload = () => {
             className="uploadIcon"
             onClick={handleClick}
           />
-          {fileName && <p className="fileName">{fileName}</p>}
-          
-      
+          {fileName2 && <p className="fileName">{fileName2}</p>}
         </div>
         {file && (
-          <button className="uploadButton buttonArchivo" onClick={handleUpload}>
+          <button className="uploadButton buttonArchivo" onClick={handleUpload2}>
             Subir Archivo
           </button>
-          )}
+        )}
       </div>
     </div>
   );
 };
 
-export default FileUpload;
+export default FileUploadNotssb;

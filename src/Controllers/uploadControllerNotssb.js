@@ -37,7 +37,7 @@ const excelDateToJSDate = (serial) => {
 };
 
 // Controlador para manejar la subida y procesamiento del archivo
-const uploadFile = (req, res) => {
+const uploadFileNotssb = (req, res) => {
   upload(req, res, function (err) {
     if (err) {
       console.error('Error en Multer:', err);
@@ -54,8 +54,6 @@ const uploadFile = (req, res) => {
     try {
       // Leer y procesar el archivo Excel
       const workbook = xlsx.readFile(filePath);
-      
-      // Arreglo para acumular los datos de todas las hojas
       let allRows = [];
 
       // Iterar sobre todas las hojas
@@ -63,48 +61,41 @@ const uploadFile = (req, res) => {
         const sheet = workbook.Sheets[sheetName];
         const rows = xlsx.utils.sheet_to_json(sheet);
 
-        // Acumular las filas de cada hoja
+        // Validación de columnas esperadas
+        rows.forEach(row => {
+          if (
+            !row.Falla || !row.Notif || !row.Zona || !row.Agencia || !row.Tarifa ||
+            !row.RPU || !row.Cuenta || !row.Nombre || !row.Elaboro || !row.Kwh || 
+            !row.Energia || !row.Total || !row.Fecha_Ultimo_Status || !row['Status Actual']
+          ) {
+            console.warn('Fila con datos incompletos:', row);
+          }
+        });
+
         allRows = allRows.concat(rows);
       });
 
-      // Preparar los datos para inserción
+      // Preparar los datos para la inserción en la base de datos
       const values = allRows.map(row => [
+        row.Falla, 
         row.Notif,
-        excelDateToJSDate(row.Fecha_Elab), // Convertir la fecha
-        row.rpe_elaboronotif,
-        row.Tarifa,
-        row['Anomalía'], // Asegurarse de que el nombre del campo coincide
-        row.Programa,
-        excelDateToJSDate(row['Fecha Insp']), // Convertir la fecha
-        row.rpe_inspeccion,
-        row.tipo,
-        excelDateToJSDate(row['Fecha Cal_Recal']), // Convertir la fecha
-        row.RPE_Calculo,
-        excelDateToJSDate(row.Fecha_Inicio), // Convertir la fecha
-        excelDateToJSDate(row.Fecha_Final), // Convertir la fecha
-        row.KHW_Total,
-        row['Imp_Energía'], // Asegurarse de que el nombre del campo coincide
-        row.Imp_Total,
-        row.Nombre,
-        row['Dirección'], // Asegurarse de que el nombre del campo coincide
-        row.rpu,
-        row.Ciudad,
-        row.Cuenta,
-        row.Cve_Agen,
+        row.Zona,
         row.Agencia,
-        row.Zona_A,
-        row.Zona_B,
-        row.medidor_inst,
-        row.medidor_ret,
-        row.Obs_notif,
-        row.Obs_edo
+        row.Tarifa,
+        row.RPU,
+        row.Cuenta,
+        row.Nombre,
+        excelDateToJSDate(row.Elaboro), 
+        row.Kwh,
+        row.Energia,
+        row.Total,
+        excelDateToJSDate(row.Fecha_Ultimo_Status),
+        row['Status Actual']
       ]);
 
-      const sql = `INSERT INTO excel_db_sinot (
-        Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
-        rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-        KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-        Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
+      // Consulta SQL para insertar los datos en la base de datos
+      const sql = `INSERT INTO excel_db_not_ssb (
+        Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual
       ) VALUES ?`;
 
       pool.query(sql, [values], (error, results) => {
@@ -113,7 +104,7 @@ const uploadFile = (req, res) => {
           return res.status(500).json({ error: error.message });
         }
 
-        res.status(200).json({ message: 'File uploaded and data saved to database successfully', file: req.file });
+        res.status(200).json({ message: 'Archivo subido y datos guardados en la base de datos exitosamente', file: req.file });
       });
     } catch (error) {
       console.error('Error al procesar el archivo Excel:', error);
@@ -122,7 +113,6 @@ const uploadFile = (req, res) => {
   });
 };
 
-
 module.exports = {
-  uploadFile
+  uploadFileNotssb
 };

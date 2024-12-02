@@ -16,6 +16,7 @@ const loginRoutes = require('./src/Routes/RouterLogin');
 const oficinasRoutes = require('./src/Routes/RouterOficinas');
 const usuariosRoutes = require('./src/Routes/RouterUsuarios'); // Nueva ruta
 const Not_ssb = require('./src/Routes/RouterNot_ssb');
+// const Sinot = require('./src/Routes/RouterSinot');
 const uploadRoutes = require('./src/Routes/RouterUpload');
 const uploadRoutesNot_ssb = require('./src/Routes/RouterUploadNot_ssb');
 
@@ -23,6 +24,7 @@ app.use('/', loginRoutes);
 app.use('/api', oficinasRoutes); // Prefijo /api para las rutas de oficinas
 app.use('/users', usuariosRoutes); // Prefijo /api para las rutas de usuarios
 app.use('/apinotssb', Not_ssb); // Prefijo /api para las rutas de excel
+// app.use('/apisinot', Sinot);
 app.use('/api', uploadRoutes);
 app.use('/apinot', uploadRoutesNot_ssb);
 // Iniciar servidor

@@ -93,18 +93,28 @@ const uploadFileNotssb = (req, res) => {
         row['Status Actual']
       ]);
 
-      // Consulta SQL para insertar los datos en la base de datos
-      const sql = `INSERT INTO excel_db_not_ssb (
-        Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual
-      ) VALUES ?`;
+      // Eliminar todos los registros existentes en la tabla antes de insertar nuevos datos
+      const deleteSql = 'DELETE FROM excel_db_not_ssb';
 
-      pool.query(sql, [values], (error, results) => {
-        if (error) {
-          console.error('Error al insertar en la base de datos:', error);
-          return res.status(500).json({ error: error.message });
+      pool.query(deleteSql, (deleteError) => {
+        if (deleteError) {
+          console.error('Error al eliminar registros existentes:', deleteError);
+          return res.status(500).json({ error: deleteError.message });
         }
 
-        res.status(200).json({ message: 'Archivo subido y datos guardados en la base de datos exitosamente', file: req.file });
+        // Consulta SQL para insertar los datos en la base de datos
+        const insertSql = `INSERT INTO excel_db_not_ssb (
+          Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual
+        ) VALUES ?`;
+
+        pool.query(insertSql, [values], (insertError, results) => {
+          if (insertError) {
+            console.error('Error al insertar en la base de datos:', insertError);
+            return res.status(500).json({ error: insertError.message });
+          }
+
+          res.status(200).json({ message: 'Archivo subido y datos guardados en la base de datos exitosamente', file: req.file });
+        });
       });
     } catch (error) {
       console.error('Error al procesar el archivo Excel:', error);

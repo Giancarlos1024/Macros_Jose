@@ -1027,10 +1027,13 @@ export const Formulario = () => {
       )}
       <h1>Registros de SINOT</h1>
       <div className='contenedor-filtro'>
-        <div className='importExcel'>
-          <FileUpload/>
-          <FileUploadNotssb/>
-        </div>
+        {userRole === 'Admin' && (
+          <div className='importExcel'>
+            <FileUpload/>
+            <FileUploadNotssb/>
+          </div>
+        )}
+        
         <input 
         type="text" 
         name="notif" 

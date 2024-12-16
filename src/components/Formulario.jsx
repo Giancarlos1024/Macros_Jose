@@ -25,6 +25,11 @@ export const Formulario = () => {
     KHW_Total: '',
     Imp_Energia: '',
     Imp_Total: '',
+    Fecha_Venta: '',
+    rpe_venta: '',
+    Operacion: '',
+    Fecha_Operacion: '',
+    rpe_operacion: '',
     Nombre: '',
     Direccion: '',
     rpu: '',
@@ -37,7 +42,8 @@ export const Formulario = () => {
     medidor_inst: '',
     medidor_ret: '',
     Obs_notif: '',
-    Obs_edo: ''
+    Obs_edo: '',
+    Obs_term: ''
   });
 
   
@@ -99,7 +105,42 @@ export const Formulario = () => {
       .then(response => response.json())
       .then(data => {
         console.log('Oficina guardada:', data);
-        setFormData({Notif: '',Fecha_Elab: '',rpe_elaboronotif: '',Tarifa: '',Anomalia: '',Programa: '',Fecha_Insp: '',rpe_inspeccion: '',tipo: '',Fecha_Cal_Recal: '',RPE_Calculo: '',Fecha_Inicio: '',Fecha_Final: '',KHW_Total: '',Imp_Energia: '',Imp_Total: '',Nombre: '',Direccion: '',rpu: '',Ciudad: '',Cuenta: '',Cve_Agen: '',Agencia: '',Zona_A: '',Zona_B: '',medidor_inst: '',medidor_ret: '',Obs_notif: '',Obs_edo: ''
+        setFormData({
+          Notif: '',
+          Fecha_Elab: '',
+          rpe_elaboronotif: '',
+          Tarifa: '',
+          Anomalia: '',
+          Programa: '',
+          Fecha_Insp: '',
+          rpe_inspeccion: '',
+          tipo: '',
+          Fecha_Cal_Recal: '',
+          RPE_Calculo: '',
+          Fecha_Inicio: '',
+          Fecha_Final: '',
+          KHW_Total: '',
+          Imp_Energia: '',
+          Imp_Total: '',
+          Fecha_Venta: '',
+          rpe_venta: '',
+          Operacion: '',
+          Fecha_Operacion: '',
+          rpe_operacion: '',
+          Nombre: '',
+          Direccion: '',
+          rpu: '',
+          Ciudad: '',
+          Cuenta: '',
+          Cve_Agen: '',
+          Agencia: '',
+          Zona_A: '',
+          Zona_B: '',
+          medidor_inst: '',
+          medidor_ret: '',
+          Obs_notif: '',
+          Obs_edo: '',
+          Obs_term: ''
         });
         setEditId(null);
         alert(editId ? 'Oficina actualizada exitosamente' : 'Oficina creada exitosamente');
@@ -128,6 +169,11 @@ export const Formulario = () => {
       KHW_Total: oficina.KHW_Total,
       Imp_Energia: oficina.Imp_Energia,
       Imp_Total: oficina.Imp_Total,
+      Fecha_Venta: oficina.Fecha_Venta ? oficina.Fecha_Venta.slice(0, 10) : '',
+      rpe_venta: oficina.rpe_venta,
+      Operacion: oficina.Operacion,
+      Fecha_Operacion: oficina.Fecha_Operacion ? oficina.Fecha_Operacion.slice(0, 10) : '',
+      rpe_operacion: oficina.rpe_operacion,
       Nombre: oficina.Nombre,
       Direccion: oficina.Direccion,
       rpu: oficina.rpu,
@@ -140,7 +186,8 @@ export const Formulario = () => {
       medidor_inst: oficina.medidor_inst,
       medidor_ret: oficina.medidor_ret,
       Obs_notif: oficina.Obs_notif,
-      Obs_edo: oficina.Obs_edo
+      Obs_edo: oficina.Obs_edo,
+      Obs_term: oficina.Obs_term
     });
     setEditId(oficina.Id);
   };
@@ -163,7 +210,42 @@ export const Formulario = () => {
     fetchOficinas();
   };
   const handleCancel = () => {
-    setFormData({Notif: '',Fecha_Elab: '',rpe_elaboronotif: '',Tarifa: '',Anomalia: '',Programa: '',Fecha_Insp: '',rpe_inspeccion: '',tipo: '',Fecha_Cal_Recal: '',RPE_Calculo: '',Fecha_Inicio: '',Fecha_Final: '',KHW_Total: '',Imp_Energia: '',Imp_Total: '',Nombre: '',Direccion: '',rpu: '',Ciudad: '',Cuenta: '',Cve_Agen: '',Agencia: '',Zona_A: '',Zona_B: '',medidor_inst: '',medidor_ret: '',Obs_notif: '',Obs_edo: ''
+    setFormData({
+      Notif: '',
+      Fecha_Elab: '',
+      rpe_elaboronotif: '',
+      Tarifa: '',
+      Anomalia: '',
+      Programa: '',
+      Fecha_Insp: '',
+      rpe_inspeccion: '',
+      tipo: '',
+      Fecha_Cal_Recal: '',
+      RPE_Calculo: '',
+      Fecha_Inicio: '',
+      Fecha_Final: '',
+      KHW_Total: '',
+      Imp_Energia: '',
+      Imp_Total: '',
+      Fecha_Venta: '',
+      rpe_venta: '',
+      Operacion: '',
+      Fecha_Operacion: '',
+      rpe_operacion: '',
+      Nombre: '',
+      Direccion: '',
+      rpu: '',
+      Ciudad: '',
+      Cuenta: '',
+      Cve_Agen: '',
+      Agencia: '',
+      Zona_A: '',
+      Zona_B: '',
+      medidor_inst: '',
+      medidor_ret: '',
+      Obs_notif: '',
+      Obs_edo: '',
+      Obs_term: ''
     });
     setEditId(null);
   };
@@ -976,26 +1058,38 @@ export const Formulario = () => {
               <input type="text" name="RPE_Calculo" value={formData.RPE_Calculo} onChange={handleChange} />
               <label htmlFor="Fecha_Inicio">Fecha de Inicio</label>
               <input type="date" name="Fecha_Inicio" value={formData.Fecha_Inicio} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Fecha_Final">Fecha Final</label>
               <input type="date" name="Fecha_Final" value={formData.Fecha_Final} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="KHW_Total">KHW Total</label>
-              <input type="number" name="KHW_Total" value={formData.KHW_Total} onChange={handleChange} />
+              <input type="number" step="0.01" name="KHW_Total" value={formData.KHW_Total} onChange={handleChange} />
               <label htmlFor="Imp_Energia">Imp Energía</label>
-              <input type="number" name="Imp_Energia" value={formData.Imp_Energia} onChange={handleChange} />
+              <input type="number" step="0.01" name="Imp_Energia" value={formData.Imp_Energia} onChange={handleChange} />
               <label htmlFor="Imp_Total">Imp Total</label>
-              <input type="number" name="Imp_Total" value={formData.Imp_Total} onChange={handleChange} />
+              <input type="number" step="0.01" name="Imp_Total" value={formData.Imp_Total} onChange={handleChange} />
+              <label htmlFor="Fecha_Venta">Fecha Venta</label>
+              <input type="date" name="Fecha_Venta" value={formData.Fecha_Venta} onChange={handleChange} />
+              <label htmlFor="rpe_venta">RPE Venta</label>
+              <input type="text" name="rpe_venta" value={formData.rpe_venta} onChange={handleChange} />
+              <label htmlFor="Operacion">Operación</label>
+              <input type="text" name="Operacion" value={formData.Operacion} onChange={handleChange} />
+            </div>
+            <div>
+              <label htmlFor="Fecha_Operacion">Fecha Operación</label>
+              <input type="date" name="Fecha_Operacion" value={formData.Fecha_Operacion} onChange={handleChange} />
+              <label htmlFor="rpe_operacion">RPE Operación</label>
+              <input type="text" name="rpe_operacion" value={formData.rpe_operacion} onChange={handleChange} />
               <label htmlFor="Nombre">Nombre</label>
               <input type="text" name="Nombre" value={formData.Nombre} onChange={handleChange} />
               <label htmlFor="Direccion">Dirección</label>
               <input type="text" name="Direccion" value={formData.Direccion} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="rpu">RPU</label>
               <input type="text" name="rpu" value={formData.rpu} onChange={handleChange} />
               <label htmlFor="Ciudad">Ciudad</label>
               <input type="text" name="Ciudad" value={formData.Ciudad} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="Cuenta">Cuenta</label>
               <input type="text" name="Cuenta" value={formData.Cuenta} onChange={handleChange} />
               <label htmlFor="Cve_Agen">Clave Agencia</label>
@@ -1004,21 +1098,23 @@ export const Formulario = () => {
               <input type="text" name="Agencia" value={formData.Agencia} onChange={handleChange} />
               <label htmlFor="Zona_A">Zona A</label>
               <input type="text" name="Zona_A" value={formData.Zona_A} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Zona_B">Zona B</label>
               <input type="text" name="Zona_B" value={formData.Zona_B} onChange={handleChange} />
               <label htmlFor="medidor_inst">Medidor Instalado</label>
               <input type="text" name="medidor_inst" value={formData.medidor_inst} onChange={handleChange} />
               <label htmlFor="medidor_ret">Medidor Retirado</label>
               <input type="text" name="medidor_ret" value={formData.medidor_ret} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="Obs_notif">Observaciones Notif</label>
               <input type="text" name="Obs_notif" value={formData.Obs_notif} onChange={handleChange} />
               <label htmlFor="Obs_edo">Observaciones Edo</label>
               <input type="text" name="Obs_edo" value={formData.Obs_edo} onChange={handleChange} />
+              <label htmlFor="Obs_term">Observaciones Term</label>
+              <input type="text" name="Obs_term" value={formData.Obs_term} onChange={handleChange} />
             </div>
             <div>
-              <button className='button-sinot' type="submit">{editId ? 'Actualizar' : 'Registrar'}</button>
+              <button className="button-sinot" type="submit">{editId ? 'Actualizar' : 'Registrar'}</button>
               <button type="button" onClick={handleCancel}>Cancelar</button>
             </div>
           </form>

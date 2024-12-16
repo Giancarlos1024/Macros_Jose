@@ -1,29 +1,34 @@
 const pool = require('../Config/conexion');
 
 // Crear una nueva oficina
-// Crear una nueva oficina
 exports.create = (req, res) => {
-
   const {
     Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
     rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-    KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
+    KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion,
+    Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term
   } = req.body;
 
   const sql = `INSERT INTO excel_db_sinot (
     Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
     rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-    KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-  
+    KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion, 
+    Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);`;
+
   const values = [
     Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
     rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-    KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
+    KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion,
+    Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term
   ];
+
+
+  console.log('Columnas:', sql.split('(')[1].split(')')[0].split(',').length); // Número de columnas
+  console.log('Valores:', values.length); // Número de valores
   
 
   pool.query(sql, values, (err, result) => {
@@ -35,7 +40,6 @@ exports.create = (req, res) => {
     }
   });
 };
-
 
 
 // Obtener todas las oficinas con filtros
@@ -85,7 +89,6 @@ exports.getAll = (req, res) => {
     }
 
     sql += ' ORDER BY Fecha_Elab ASC LIMIT ? OFFSET ?';
-
     queryParams.push(parseInt(limit), parseInt(offset));
 
     pool.query(sql, queryParams, (err, results) => {
@@ -99,31 +102,32 @@ exports.getAll = (req, res) => {
   });
 };
 
-
 // Actualizar una oficina
 exports.update = (req, res) => {
   const { id } = req.params;
   const {
     Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
     rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-    KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
+    KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion,
+    Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term
   } = req.body;
 
   const sql = `UPDATE excel_db_sinot SET
     Notif = ?, Fecha_Elab = ?, rpe_elaboronotif = ?, Tarifa = ?, Anomalia = ?, Programa = ?,
     Fecha_Insp = ?, rpe_inspeccion = ?, tipo = ?, Fecha_Cal_Recal = ?, RPE_Calculo = ?,
     Fecha_Inicio = ?, Fecha_Final = ?, KHW_Total = ?, Imp_Energia = ?, Imp_Total = ?,
+    Fecha_Venta = ?, rpe_venta = ?, Operacion = ?, Fecha_Operacion = ?, rpe_operacion = ?,
     Nombre = ?, Direccion = ?, rpu = ?, Ciudad = ?, Cuenta = ?, Cve_Agen = ?, Agencia = ?,
-    Zona_A = ?, Zona_B = ?, medidor_inst = ?, medidor_ret = ?, Obs_notif = ?, Obs_edo = ?
+    Zona_A = ?, Zona_B = ?, medidor_inst = ?, medidor_ret = ?, Obs_notif = ?, Obs_edo = ?, Obs_term = ?
     WHERE Id = ?`;
 
   const values = [
     Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
     rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-    KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo,
-    id
+    KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion,
+    Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+    Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term, id
   ];
 
   pool.query(sql, values, (err, result) => {
@@ -135,6 +139,7 @@ exports.update = (req, res) => {
     }
   });
 };
+
 
 // Eliminar una oficina
 exports.delete = (req, res) => {

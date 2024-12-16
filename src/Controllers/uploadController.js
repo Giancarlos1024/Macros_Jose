@@ -85,6 +85,11 @@ const uploadFile = (req, res) => {
         row.KHW_Total,
         row['Imp_Energía'], // Asegurarse de que el nombre del campo coincide
         row.Imp_Total,
+        excelDateToJSDate(row['Fecha Venta']), // Convertir la fecha
+        row.rpe_venta,
+        row.Operacion,
+        excelDateToJSDate(row['Fecha Operación']), // Convertir la fecha
+        row.rpe_operacion,
         row.Nombre,
         row['Dirección'], // Asegurarse de que el nombre del campo coincide
         row.rpu,
@@ -97,9 +102,10 @@ const uploadFile = (req, res) => {
         row.medidor_inst,
         row.medidor_ret,
         row.Obs_notif,
-        row.Obs_edo
+        row.Obs_edo,
+        row.Obs_term // Incluir Obs_term aquí
       ]);
-
+      
       // Primero, borrar los datos existentes en la tabla
       pool.query('DELETE FROM excel_db_sinot', (deleteError) => {
         if (deleteError) {
@@ -109,11 +115,12 @@ const uploadFile = (req, res) => {
 
         // Luego, insertar los nuevos datos
         const sql = `INSERT INTO excel_db_sinot (
-          Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
-          rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
-          KHW_Total, Imp_Energia, Imp_Total, Nombre, Direccion, rpu, Ciudad, Cuenta,
-          Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo
-        ) VALUES ?`;
+              Notif, Fecha_Elab, rpe_elaboronotif, Tarifa, Anomalia, Programa, Fecha_Insp,
+              rpe_inspeccion, tipo, Fecha_Cal_Recal, RPE_Calculo, Fecha_Inicio, Fecha_Final,
+              KHW_Total, Imp_Energia, Imp_Total, Fecha_Venta, rpe_venta, Operacion, 
+              Fecha_Operacion, rpe_operacion, Nombre, Direccion, rpu, Ciudad, Cuenta,
+              Cve_Agen, Agencia, Zona_A, Zona_B, medidor_inst, medidor_ret, Obs_notif, Obs_edo, Obs_term
+            ) VALUES ?`;
 
         pool.query(sql, [values], (insertError, results) => {
           if (insertError) {

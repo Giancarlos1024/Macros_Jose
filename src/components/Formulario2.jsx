@@ -12,17 +12,21 @@ export const Formulario2 = () => {
     Notif: '',
     Zona: '',
     Agencia: '',
-    Nombre: '',
     Tarifa: '',
     RPU: '',
     Cuenta: '',
+    Nombre: '',
+    Calculo: '',
     Elaboro: '',
     Kwh: '',
     Energia: '',
+    IVA: '',
+    DAP: '',
     Total: '',
     Fecha_Ultimo_Status: '',
     Status_Actual: ''
   });
+
 
   const [oficinas, setOficinas] = useState([]);
 
@@ -117,17 +121,21 @@ export const Formulario2 = () => {
         Notif: '',
         Zona: '',
         Agencia: '',
-        Nombre: '',
         Tarifa: '',
         RPU: '',
         Cuenta: '',
+        Nombre: '',
+        Calculo: '',
         Elaboro: '',
         Kwh: '',
         Energia: '',
+        IVA: '',
+        DAP: '',
         Total: '',
         Fecha_Ultimo_Status: '',
         Status_Actual: ''
       });
+    
       setEditing(false);
       setCurrentId(null);
     } catch (error) {
@@ -149,6 +157,7 @@ export const Formulario2 = () => {
       setForm({
         ...data,
         Elaboro: formatDateTime(data.Elaboro),
+        Calculo: formatDateTime(data.Calculo),
         Fecha_Ultimo_Status: formatDateTime(data.Fecha_Ultimo_Status),
       });
   
@@ -858,7 +867,7 @@ export const Formulario2 = () => {
               <div>
                 <label>NOTIF</label>
                 <input
-                  type="text"
+                  type="number"
                   name="Notif"
                   value={form.Notif}
                   onChange={handleChange}
@@ -905,7 +914,7 @@ export const Formulario2 = () => {
               <div>
                 <label>RPU</label>
                 <input
-                  type="text"
+                  type="number"
                   name="RPU"
                   value={form.RPU}
                   onChange={handleChange}
@@ -921,6 +930,15 @@ export const Formulario2 = () => {
                 />
               </div>
               <div>
+                <label>CALCULO</label>
+                <input
+                  type="datetime-local"
+                  name="Calculo"
+                  value={form.Calculo}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
                 <label>ELABORO</label>
                 <input
                   type="datetime-local"
@@ -929,35 +947,60 @@ export const Formulario2 = () => {
                   onChange={handleChange}
                 />
               </div>
+            </div>
+            <div>
               <div>
                 <label>KWH</label>
                 <input
-                  type="text"
+                  type="number"
                   name="Kwh"
+                  step="0.001"
                   value={form.Kwh}
                   onChange={handleChange}
                 />
               </div>
-            </div>
-            <div>
               <div>
                 <label>ENERGIA</label>
                 <input
-                  type="text"
+                  type="number"
                   name="Energia"
+                  step="0.01"
                   value={form.Energia}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>IVA</label>
+                <input
+                  type="number"
+                  name="IVA"
+                  step="0.01"
+                  value={form.IVA}
+                  onChange={handleChange}
+                />
+              </div>
+              <div>
+                <label>DAP</label>
+                <input
+                  type="number"
+                  name="DAP"
+                  step="0.01"
+                  value={form.DAP}
                   onChange={handleChange}
                 />
               </div>
               <div>
                 <label>TOTAL</label>
                 <input
-                  type="text"
+                  type="number"
                   name="Total"
+                  step="0.01"
                   value={form.Total}
                   onChange={handleChange}
                 />
               </div>
+            </div>
+            <div>
               <div>
                 <label>FECHA_ULTIMO_STATUS</label>
                 <input
@@ -979,9 +1022,41 @@ export const Formulario2 = () => {
             </div>
             <div className='botones-bot'>
               <button className='button-notssb' type="submit">{editing ? 'Actualizar' : 'Crear'}</button>
-              {editing && <button type="button" className='button-notssb' onClick={() => { setEditing(false); setCurrentId(null); setForm({ Id: '', Falla: '', Notif: '', Zona: '', Agencia: '', Nombre: '', Tarifa: '', RPU: '', Cuenta: '', Elaboro: '', Kwh: '', Energia: '', Total: '', Fecha_Ultimo_Status: '', Status_Actual: '' }); }}>Cancelar</button>}
+              {editing && (
+                <button
+                  type="button"
+                  className='button-notssb'
+                  onClick={() => {
+                    setEditing(false);
+                    setCurrentId(null);
+                    setForm({
+                      Id: '',
+                      Falla: '',
+                      Notif: '',
+                      Zona: '',
+                      Agencia: '',
+                      Tarifa: '',
+                      RPU: '',
+                      Cuenta: '',
+                      Nombre: '',
+                      Calculo: '',
+                      Elaboro: '',
+                      Kwh: '',
+                      Energia: '',
+                      IVA: '',
+                      DAP: '',
+                      Total: '',
+                      Fecha_Ultimo_Status: '',
+                      Status_Actual: ''
+                    });
+                  }}
+                >
+                  Cancelar
+                </button>
+              )}
             </div>
           </form>
+
         </div>
 
       )}

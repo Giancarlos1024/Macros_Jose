@@ -1,13 +1,11 @@
 const pool = require('../Config/conexion');
 
-// Obtener todos los registros
-// Obtener todos los registros con filtros opcionales
 // Obtener todos los registros con paginación y filtros opcionales
 exports.getAllRecords = (req, res) => {
   const { notif, year, page = 1, pageSize = 10 } = req.query;
-  
+
   let sql = 'SELECT * FROM excel_db_not_ssb WHERE 1=1';
-  
+
   if (notif) {
     sql += ' AND Notif = ?';
   }
@@ -18,7 +16,7 @@ exports.getAllRecords = (req, res) => {
   // Agregar paginación
   const offset = (page - 1) * pageSize;
   sql += ' LIMIT ?, ?';
-  
+
   const values = [];
   if (notif) values.push(notif);
   if (year) values.push(year);
@@ -34,13 +32,12 @@ exports.getAllRecords = (req, res) => {
   });
 };
 
-
 // Obtener el conteo total de registros con filtros opcionales
 exports.getRecordCount = (req, res) => {
   const { notif, year } = req.query;
-  
+
   let sql = 'SELECT COUNT(*) AS count FROM excel_db_not_ssb WHERE 1=1';
-  
+
   if (notif) {
     sql += ' AND Notif = ?';
   }
@@ -62,8 +59,6 @@ exports.getRecordCount = (req, res) => {
   });
 };
 
-
-
 // Obtener un solo registro por ID
 exports.getRecordById = (req, res) => {
   const { id } = req.params;
@@ -82,9 +77,32 @@ exports.getRecordById = (req, res) => {
 
 // Crear un nuevo registro
 exports.createRecord = (req, res) => {
-  const { Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual } = req.body;
+  const {
+    Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Calculo, Elaboro,
+    Kwh, Energia, IVA, DAP, Total, Fecha_Ultimo_Status, Status_Actual
+  } = req.body;
+
+  const formatDate = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const hours = String(d.getHours()).padStart(2, '0');
+    const minutes = String(d.getMinutes()).padStart(2, '0');
+    const seconds = String(d.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  };
+
   const sql = 'INSERT INTO excel_db_not_ssb SET ?';
-  const values = { Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual };
+  const values = {
+    Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre,
+    Calculo: formatDate(Calculo),
+    Elaboro: formatDate(Elaboro),
+    Kwh, Energia, IVA, DAP, Total,
+    Fecha_Ultimo_Status: formatDate(Fecha_Ultimo_Status),
+    Status_Actual
+  };
+
   pool.query(sql, values, (err, result) => {
     if (err) {
       console.error(err);
@@ -95,18 +113,26 @@ exports.createRecord = (req, res) => {
   });
 };
 
+
 // Actualizar un registro por ID
 exports.updateRecord = (req, res) => {
   const { id } = req.params;
-  const { Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual } = req.body;
+  const {
+    Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Calculo, Elaboro,
+    Kwh, Energia, IVA, DAP, Total, Fecha_Ultimo_Status, Status_Actual
+  } = req.body;
+
   const sql = `UPDATE excel_db_not_ssb SET
-    Falla = ?, Notif = ?, Zona = ?, Agencia = ?, Tarifa = ?, RPU = ?, Cuenta = ?, Nombre = ?, Elaboro = ?,
-    Kwh = ?, Energia = ?, Total = ?, Fecha_Ultimo_Status = ?, Status_Actual = ?
+    Falla = ?, Notif = ?, Zona = ?, Agencia = ?, Tarifa = ?, RPU = ?, Cuenta = ?, 
+    Nombre = ?, Calculo = ?, Elaboro = ?, Kwh = ?, Energia = ?, IVA = ?, DAP = ?, 
+    Total = ?, Fecha_Ultimo_Status = ?, Status_Actual = ?
     WHERE Id = ?`;
+
   const values = [
-    Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total,
-    Fecha_Ultimo_Status, Status_Actual, id
+    Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Calculo, Elaboro,
+    Kwh, Energia, IVA, DAP, Total, Fecha_Ultimo_Status, Status_Actual, id
   ];
+
   pool.query(sql, values, (err, result) => {
     if (err) {
       console.error(err);

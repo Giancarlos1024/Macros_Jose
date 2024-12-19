@@ -1030,7 +1030,7 @@ export const Formulario = () => {
         <div>
         <div className='contenedor-registro'>
           <h2>CREAR REGISTRO SINOT</h2>
-          <form onSubmit={handleSubmit}>
+          <form className='formulario-sinot-data' onSubmit={handleSubmit}>
             <div>
               <label htmlFor="Notif">Notificación</label>
               <input type="text" name="Notif" value={formData.Notif} onChange={handleChange} />
@@ -1044,10 +1044,10 @@ export const Formulario = () => {
               <input type="text" name="Anomalia" value={formData.Anomalia} onChange={handleChange} />
               <label htmlFor="Programa">Programa</label>
               <input type="text" name="Programa" value={formData.Programa} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Fecha_Insp">Fecha de Inspección</label>
               <input type="date" name="Fecha_Insp" value={formData.Fecha_Insp} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="rpe_inspeccion">RPE Inspección</label>
               <input type="text" name="rpe_inspeccion" value={formData.rpe_inspeccion} onChange={handleChange} />
               <label htmlFor="tipo">Tipo</label>
@@ -1060,10 +1060,10 @@ export const Formulario = () => {
               <input type="date" name="Fecha_Inicio" value={formData.Fecha_Inicio} onChange={handleChange} />
               <label htmlFor="Fecha_Final">Fecha Final</label>
               <input type="date" name="Fecha_Final" value={formData.Fecha_Final} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="KHW_Total">KHW Total</label>
               <input type="number" step="0.01" name="KHW_Total" value={formData.KHW_Total} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="Imp_Energia">Imp Energía</label>
               <input type="number" step="0.01" name="Imp_Energia" value={formData.Imp_Energia} onChange={handleChange} />
               <label htmlFor="Imp_Total">Imp Total</label>
@@ -1074,12 +1074,12 @@ export const Formulario = () => {
               <input type="text" name="rpe_venta" value={formData.rpe_venta} onChange={handleChange} />
               <label htmlFor="Operacion">Operación</label>
               <input type="text" name="Operacion" value={formData.Operacion} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Fecha_Operacion">Fecha Operación</label>
               <input type="date" name="Fecha_Operacion" value={formData.Fecha_Operacion} onChange={handleChange} />
               <label htmlFor="rpe_operacion">RPE Operación</label>
               <input type="text" name="rpe_operacion" value={formData.rpe_operacion} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="Nombre">Nombre</label>
               <input type="text" name="Nombre" value={formData.Nombre} onChange={handleChange} />
               <label htmlFor="Direccion">Dirección</label>
@@ -1088,14 +1088,14 @@ export const Formulario = () => {
               <input type="text" name="rpu" value={formData.rpu} onChange={handleChange} />
               <label htmlFor="Ciudad">Ciudad</label>
               <input type="text" name="Ciudad" value={formData.Ciudad} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Cuenta">Cuenta</label>
               <input type="text" name="Cuenta" value={formData.Cuenta} onChange={handleChange} />
               <label htmlFor="Cve_Agen">Clave Agencia</label>
               <input type="text" name="Cve_Agen" value={formData.Cve_Agen} onChange={handleChange} />
               <label htmlFor="Agencia">Agencia</label>
               <input type="text" name="Agencia" value={formData.Agencia} onChange={handleChange} />
+            </div>
+            <div>
               <label htmlFor="Zona_A">Zona A</label>
               <input type="text" name="Zona_A" value={formData.Zona_A} onChange={handleChange} />
               <label htmlFor="Zona_B">Zona B</label>
@@ -1104,8 +1104,6 @@ export const Formulario = () => {
               <input type="text" name="medidor_inst" value={formData.medidor_inst} onChange={handleChange} />
               <label htmlFor="medidor_ret">Medidor Retirado</label>
               <input type="text" name="medidor_ret" value={formData.medidor_ret} onChange={handleChange} />
-            </div>
-            <div>
               <label htmlFor="Obs_notif">Observaciones Notif</label>
               <input type="text" name="Obs_notif" value={formData.Obs_notif} onChange={handleChange} />
               <label htmlFor="Obs_edo">Observaciones Edo</label>
@@ -1113,7 +1111,7 @@ export const Formulario = () => {
               <label htmlFor="Obs_term">Observaciones Term</label>
               <input type="text" name="Obs_term" value={formData.Obs_term} onChange={handleChange} />
             </div>
-            <div>
+            <div className='butones-sinot'>
               <button className="button-sinot" type="submit">{editId ? 'Actualizar' : 'Registrar'}</button>
               <button type="button" onClick={handleCancel}>Cancelar</button>
             </div>

@@ -66,7 +66,8 @@ const uploadFileNotssb = (req, res) => {
           if (
             !row.Falla || !row.Notif || !row.Zona || !row.Agencia || !row.Tarifa ||
             !row.RPU || !row.Cuenta || !row.Nombre || !row.Elaboro || !row.Kwh || 
-            !row.Energia || !row.Total || !row.Fecha_Ultimo_Status || !row['Status Actual']
+            !row.Energia || !row.Total || !row.Calculo || !row.IVA || !row.DAP ||
+            !row.Fecha_Ultimo_Status || !row['Status Actual']
           ) {
             console.warn('Fila con datos incompletos:', row);
           }
@@ -85,11 +86,15 @@ const uploadFileNotssb = (req, res) => {
         row.RPU,
         row.Cuenta,
         row.Nombre,
-        excelDateToJSDate(row.Elaboro), 
+        row.Calculo,
+        row.Elaboro,
         row.Kwh,
         row.Energia,
+        row.IVA,
+        row.DAP,
         row.Total,
-        excelDateToJSDate(row.Fecha_Ultimo_Status),
+        // excelDateToJSDate(row.Fecha_Ultimo_Status),
+        row.Fecha_Ultimo_Status,
         row['Status Actual']
       ]);
 
@@ -104,7 +109,7 @@ const uploadFileNotssb = (req, res) => {
 
         // Consulta SQL para insertar los datos en la base de datos
         const insertSql = `INSERT INTO excel_db_not_ssb (
-          Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Elaboro, Kwh, Energia, Total, Fecha_Ultimo_Status, Status_Actual
+          Falla, Notif, Zona, Agencia, Tarifa, RPU, Cuenta, Nombre, Calculo, Elaboro, Kwh, Energia, IVA, DAP, Total, Fecha_Ultimo_Status, Status_Actual
         ) VALUES ?`;
 
         pool.query(insertSql, [values], (insertError, results) => {
